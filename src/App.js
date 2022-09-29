@@ -4,14 +4,24 @@ import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { Program, Provider, web3 } from "@project-serum/anchor";
 import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
+import idl from './idl.json';
+
+import kp from './keypair.json'
 
 //CONSTANTS
 
-const TEST_GIFS = [
-        'https://media.giphy.com/media/Uun3HIZM8KSz69jhJt/giphy.gif',
-        'https://media.giphy.com/media/mw8oowBHuUWPK3nW0L/giphy.gif',
-        'https://media.giphy.com/media/B6RwBircNEBMF3Az3E/giphy.gif',
-]
+const { SystemProgram, Keypair} = web3;
+const arr = Object.values(kp._keypair.secretKey)
+const secret = new Uint8Array(arr)
+const baseAccount = web3.Keypair.fromSecretKey(secret)
+
+const programID = new PublicKey("6YJvRpLhVBZfmLxHy5m3P2Nv61A25H4cGmVnE2BxMsdF")
+const network = clusterApiUrl("devnet");
+const opts = {
+  preflightCommitment:"processed",
+}
+
+
 
 const App = () => {
   //useSTATE
@@ -72,16 +82,71 @@ const App = () => {
     setInputValue(value);
   };
   
+  
+
+  const getProgram = async () => {
+    const idl = await Program.fetchIdl(programID, getProvider());
+    return new Program(idl, programID, getProvider());
+  };
+
+
+  const getGifList = async () => {
+    try{
+      const program = await getProgram();
+      const account = await program.account.baseAccount.fetch(
+        baseAccount.publicKey
+      );
+      console.log('Got the account', account);
+      setGifList(account.gifList);
+    }
+    catch (error) {
+      console.log("error in getgiflist:", error);
+      setGifList(null);
+    }
+  };
+
+  const getProvider = () => {
+    const connection = new Connection(network, opts.preflightCommitment);
+    const provider = new Provider(
+      connection,
+      window.solana, 
+      opts.preflightCommitment,
+    );
+    return provider;
+  }
+
   const sendGif = async () => {
     if (inputValue.length > 0){
       console.log('Gif Link:', inputValue);
       setGifList([...gifList, inputValue]);
       setInputValue('');
       showGifSentToast();
-    }else{
+    } else {
       console.log('Empty Input. Try again. :)');
     }
   };
+  const createGifAccount = async () => {
+    try {
+      const provider = getProvider();
+      const program = await getProgram();
+      console.log("Ping")
+      await program.rpc.startStuffOff({
+        accounts: {
+          baseAccount: baseAccount.publicKey,
+          user: provider.wallet.publicKey,
+          systemProgram: SystemProgram.programId,
+
+        },
+        signers: [baseAccount]
+      });
+      console.log("Created a new BaseAccount w/ address: ", baseAccount.publicKey.toString())
+      await getGifList();
+    } catch(error){
+      console.log("Error creating BaseAccount account:" , error)
+    }
+  }
+
+  
 
   const renderNotConnectedContainer = () => (
     <div className="container">
@@ -98,8 +163,18 @@ const App = () => {
     </div>
   );
 
-  const renderConnectedContainer = () => (
-    <div className="connected-container">
+  const renderConnectedContainer = () => {
+    if (gifList === null ){
+      return(
+        <div className="connected-container">
+          <button className="cta-button sumbit-gif-button" onClick={createGifAccount}>
+            Do One Time Initialization for GIF Program Account
+          </button>
+        </div>
+      );
+    }else {
+      return(
+        <div className="connected-container">
       <p className="connected-header">Scene Portal</p>
       <button className="cta-button disconnect-wallet-button" onClick={disconnectWallet} >
         Sign Out
@@ -131,7 +206,9 @@ const App = () => {
       
     </div>
     </div>
-  );
+      );
+    }
+  };
   //useEFFECTS
   useEffect(() => {
    const onLoad = async () => {
@@ -145,15 +222,14 @@ const App = () => {
    useEffect(() => {
     if (walletAddress) {
       console.log("Fetching GIF List...");
-
-      //Call sol prog here.
-      setGifList(TEST_GIFS);
+      getGifList();
     }
-   }, [walletAddress])
-  return (
-    <div className="App">
-      <div className={walletAddress ? "authed-container" : "container"}>
-        <Toaster
+   }, [walletAddress]);
+
+    return (
+      <div className="App">
+        <div className={walletAddress ? "authed-container" : "container"}>
+          <Toaster
           toastOptions={{
             className: "",
             duration: 3000,
