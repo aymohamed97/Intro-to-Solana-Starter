@@ -116,15 +116,34 @@ const App = () => {
   }
 
   const sendGif = async () => {
-    if (inputValue.length > 0){
-      console.log('Gif Link:', inputValue);
-      setGifList([...gifList, inputValue]);
-      setInputValue('');
-      showGifSentToast();
-    } else {
-      console.log('Empty Input. Try again. :)');
-    }
-  };
+    if (inputValue.length === 0){
+      console.log("No gif link given!");
+      return;
+      
+    } 
+      setInputValue("");
+      console.log("Gif Link: ", inputValue);
+      try {
+        const provider = getProvider();
+        const program = new Program(idl, programID, provider);
+
+        await program.rpc.addGif(inputValue, {
+          accounts: {
+            baseAccount: baseAccount.publicKey,
+            user: provider.wallet.publicKey,
+          },
+
+        });
+        console.log("Gif successfully sent to the program", inputValue);
+        
+        await getGifList();
+        showGifSentToast();
+      } catch (error){
+        console.log("Error sending gifL", error);
+      }
+    };
+
+  
   const createGifAccount = async () => {
     try {
       const provider = getProvider();
@@ -146,6 +165,10 @@ const App = () => {
     }
   }
 
+  const shortenAddress = (address) => {
+    if (!address) return "";
+    return address.substring(0,4) + "....." + address.substring(40);
+  }
   
 
   const renderNotConnectedContainer = () => (
@@ -177,7 +200,7 @@ const App = () => {
         <div className="connected-container">
       <p className="connected-header">Scene Portal</p>
       <button className="cta-button disconnect-wallet-button" onClick={disconnectWallet} >
-        Sign Out
+        Sign Out(shortenAddress(walletAddress))
       </button>
       <form
         className="form"
@@ -198,10 +221,20 @@ const App = () => {
       </form>
 
       <div className="gif-grid">
-        {gifList.map((gif) => (
-          <div className="gif-item" key={gif}>
-            <img className="gif-image" src={gif} alt={gif}/>
-          </div> 
+        {gifList.map((item, index) => (
+          <div className="gif-item" key={index}>
+            <img className="gif-image" src={item.gifLink} alt={item.gifLink}/>
+            <div className="address-tag">
+              <img 
+              className="phantom-image"
+              src="https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,f_auto,q_auto:eco,dpr_1/sqzgmbkggvc1uwgapeuy"
+              alt="phantom wallet"
+              />
+              <p className="address">
+                @{shortenAddress(item.userAddress.toString())}
+              </p>
+              </div> 
+              </div>
         ))}
       
     </div>
