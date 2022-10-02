@@ -211,7 +211,7 @@ const App = () => {
         >
         <input 
           type='text' 
-          placeholder="Post a gif that reflects your feelings"
+          placeholder="Share a gif dude"
           value={inputValue}
           onChange={onInputChange}
         />
