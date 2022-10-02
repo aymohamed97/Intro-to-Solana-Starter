@@ -179,8 +179,8 @@ const App = () => {
        > 
         Sign In 
         </button>
-      <p className="header">Scene Portal</p>
-      <p className="sub-header">Your favorite scenes, on the blockchain</p>
+      <p className="header">M00d Space</p>
+      <p className="sub-header"> Your Mood on the blockchain</p>
       <div className="moon" />
       <div className="kiki" />
     </div>
@@ -198,9 +198,9 @@ const App = () => {
     }else {
       return(
         <div className="connected-container">
-      <p className="connected-header">Scene Portal</p>
+      <p className="connected-header"> Mood Space</p>
       <button className="cta-button disconnect-wallet-button" onClick={disconnectWallet} >
-        Sign Out(shortenAddress(walletAddress))
+        Sign Out
       </button>
       <form
         className="form"
@@ -211,7 +211,7 @@ const App = () => {
         >
         <input 
           type='text' 
-          placeholder="post your favorite film/tv scene"
+          placeholder="Post a gif that reflects your feelings"
           value={inputValue}
           onChange={onInputChange}
         />

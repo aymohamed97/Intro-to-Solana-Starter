@@ -1,6 +1,6 @@
 .App {
   height: 100vh;
-  background-color: #250352;
+  background-color: #fffdd05b;
   overflow: auto;
   text-align: center;
 }
@@ -26,23 +26,23 @@
   margin-top: -500px;
   font-size: 2.5rem;
   font-family: "Permanent Marker", cursive;
-  color: white;
+  color: #444443;
 }
 
 .sub-header {
   margin-top: -10px;
   font-size: 1.1rem;
   font-family: "Permanent Marker", cursive;
-  color: white;
+  color: #444443;
 }
 
 .connected-header {
   font-family: "Permanent Marker", cursive;
-  color: white;
+  color: rgba(23, 18, 18, 0.632);
   position: relative;
   left: -530px;
   top: 12px;
-  font-size: 1.6rem;
+  font-size: 2.0rem;
 }
 
 .cta-button {
@@ -58,7 +58,7 @@
 }
 
 .connect-wallet-button {
-  background-color: #360477;
+  background-color: #006400;
   background-size: 200% 200%;
   font-family: "Permanent Marker", cursive;
   position: relative;
@@ -68,13 +68,14 @@
 }
 
 .disconnect-wallet-button {
-  background-color: #360477;
+  background-color: #006400;
   position: relative;
   font-family: "Permanent Marker", cursive;
+  height: 50px;
   font-size: 0.9rem;
   left: 500px;
-  top: -60px;
-  width: 250px;
+  top: -65px;
+  width: 150px;
 }
 
 .form {
@@ -86,7 +87,7 @@
 }
 
 .submit-gif-button {
-  background-color: #360477;
+  background-color: #006400;
   background-size: 200% 200%;
   margin-left: 10px;
   font-family: "Permanent Marker", cursive;
@@ -110,7 +111,7 @@
   position: relative;
   justify-self: center;
   align-self: center;
-  background-color: #360477;
+  background-color: #E6D09F;
   padding: 15px;
   border-radius: 15px;
 }
@@ -131,10 +132,10 @@
   color: white;
   padding: 10px;
   width: 50%;
-  height: 60px;
+  height: 50px;
   font-size: 16px;
   box-sizing: border-box;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color:#00db634a;
   border: none;
   border-radius: 10px;
   margin: 50px auto;
@@ -150,7 +151,7 @@
   column-gap: 8px;
   grid-column-gap: 8px;
   padding: 6px 10px 8px 10px;
-  background-color: #360477;
+  background-color: #444443;
   width: 150px;
   height: 20px;
   border-radius: 34px;
